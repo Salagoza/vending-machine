@@ -1,10 +1,16 @@
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 
-app = Flask(__name__)
+db = SQLAlchemy()
+DB_NAME = "database.db"
 
-@app.route("/")
-def index():
-    return "Hello, World"
+def create_app():
+    app = Flask(__name__)
+    app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DB_NAME}"
+    db.init_app(app)
 
-if __name__ == "__main___":
-    app.run(debug=True)
+    from machine import machine
+
+    app.register_blueprint(machine,url_prefix="/api/machine")
+    
+    return app
