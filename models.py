@@ -24,12 +24,14 @@ class Product(db.Model):
     type = db.Column(db.String(150))
     price = db.Column(db.Integer)
     machine_id = db.Column(db.Integer,db.ForeignKey('machine.id'))
+    quantity = db.Column(db.Integer)
 
     def __init__(self, name,type,price,machine_id):
         self.name = name
         self.type = type
         self.price = price
         self.machine_id = machine_id
+        self.quantity = 1
     
     def to_dict(self):
         res = {}

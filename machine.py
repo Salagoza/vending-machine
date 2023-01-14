@@ -2,7 +2,6 @@ from flask import Blueprint,request
 from sqlalchemy.sql import text
 from db import db
 from models import Machine
-from flask import jsonify
 
 machine = Blueprint('machine',__name__)
 
@@ -42,24 +41,7 @@ def get():
             p["type"] = product.type
             p["price"] = product.price
             p["machine_id"] = product.machine_id
+            p["quantity"] = product.quantity
             m["stock"].append(p)
         result["machines"].append(m)
     return result
-
-
-"""
-Function to test database.
-"""
-@machine.route('/')
-def testdb():
-    try:
-        db.session.query(text('1')).from_statement(text('SELECT 1')).all()
-        return '<h1>It works.</h1>'
-    except Exception as e:
-        # e holds description of the error
-        error_text = "<p>The error:<br>" + str(e) + "</p>"
-        hed = '<h1>Something is broken.</h1>'
-        return hed + error_text
-
-
-

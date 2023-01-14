@@ -13,9 +13,15 @@ def create():
     type = request.form["type"]
     price = request.form["price"]
     machine_id = request.form["machine_id"]
-    new_product = Product(name,type,price,machine_id)
-    db.session.add(new_product)
-    db.session.commit()
+    # If the new product already exists in the machine increase the stock else create insert as a new record
+    product = Product.query.filter(Product.name==name,Product.machine_id==machine_id).first()
+    if (product == None):
+        new_product = Product(name,type,price,machine_id)
+        db.session.add(new_product)
+        db.session.commit()
+    else:
+        product.quantity += 1
+        db.session.commit()
     return "Added new product to the database!"
 
 
