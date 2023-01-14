@@ -25,11 +25,27 @@ def create():
 """
 Function to get all the vending machine.
 """
-
 @machine.route("/get",methods=["GET"])
 def get():
-    lists = list(map(lambda l: l.to_dict(), Machine.query.all()))
-    return jsonify({"machines": lists})
+    machines = Machine.query.all()
+    result = {"machines" : []}
+    for machine in machines:
+        m = {}
+        m["id"] = machine.id
+        m["address"] = machine.address
+        m["name"] = machine.name
+        m["stock"] = []
+        for product in machine.stock:
+            p = {}
+            p["id"] = product.id
+            p["name"] = product.name
+            p["type"] = product.type
+            p["price"] = product.price
+            p["machine_id"] = product.machine_id
+            m["stock"].append(p)
+        result["machines"].append(m)
+    return result
+
 
 """
 Function to test database.
