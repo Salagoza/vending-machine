@@ -5,10 +5,6 @@ from models import Machine
 
 machine = Blueprint('machine',__name__)
 
-# @machine.route("/")
-# def index():
-#     return "Hello from machine"
-
 """
 Function to create the vending machine.
 """
@@ -45,3 +41,10 @@ def get():
             m["stock"].append(p)
         result["machines"].append(m)
     return result
+
+@machine.route("/delete/<id>",methods=["DELETE"])
+def delete(id):
+    machine = Machine.query.get(id)
+    db.session.delete(machine)
+    db.session.commit()
+    return "Delete machine successfully"
