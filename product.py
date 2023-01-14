@@ -29,3 +29,17 @@ def create():
 def get():
     lists = list(map(lambda l: l.to_dict(), Product.query.all()))
     return jsonify({"products": lists})
+
+@product.route("/delete",methods=["DELETE"])
+def delete():
+    name = request.form["name"]
+    machine_id = request.form["machine_id"]
+    product = Product.query.filter(Product.name==name,Product.machine_id==machine_id).first()
+    # If the stock level of that product is greater than 1 decrease the stock else delete the record
+    if (product.quantity != 1):
+        product.quantity -= 1
+        db.session.commit()
+    else:
+        db.session.delete(product)
+        db.session.commit()
+    return "Delete product from stock!"
