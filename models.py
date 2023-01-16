@@ -3,25 +3,18 @@ from db import db
 class Machine(db.Model):
     id = db.Column(db.Integer,primary_key=True)
     name = db.Column(db.String(150),unique=True)
-    address = db.Column(db.String(150))
+    address = db.Column(db.String(150),nullable=False)
     stock = db.relationship('Product',backref="machine",cascade="all,delete")
 
     def __init__(self, name,address):
         self.name = name
         self.address = address
     
-    def to_dict(self):
-        res = {}
-        for field in self.__table__.columns.keys():
-            if hasattr(self, field):
-                res[field] = getattr(self, field)
-        return res
-
 class Product(db.Model):
     id = db.Column(db.Integer,primary_key=True)
-    name = db.Column(db.String(150))
-    type = db.Column(db.String(150))
-    price = db.Column(db.Integer)
+    name = db.Column(db.String(150),nullable=False)
+    type = db.Column(db.String(150),nullable=False)
+    price = db.Column(db.Integer,nullable=False)
     machine_id = db.Column(db.Integer,db.ForeignKey(Machine.id))
     quantity = db.Column(db.Integer)
 

@@ -6,7 +6,7 @@ from models import Machine
 machine = Blueprint('machine',__name__)
 
 """
-Function to create the vending machine.
+Function to create vending machine.
 """
 @machine.route("/create",methods=["POST"])
 def create():
@@ -16,9 +16,9 @@ def create():
     db.session.add(new_machine)
     db.session.commit()
     return "Added new machine to the database!"
-
+    
 """
-Function to get all the vending machine.
+Function to get all vending machines.
 """
 @machine.route("/get",methods=["GET"])
 def get():
@@ -42,9 +42,25 @@ def get():
         result["machines"].append(m)
     return result
 
+"""
+Function to update the vending machine name or adress.
+"""
+@machine.route("/update/<id>",methods=["PUT"])
+def update(id):    
+    machine = Machine.query.get(id)
+    new_name = request.form["name"] or machine.name
+    new_address = request.form["address"] or machine.address
+    machine.name = new_name
+    machine.address = new_address
+    db.session.commit()
+    return "Updated the vending machine information!"
+
+"""
+Function to delete vending machine.
+"""
 @machine.route("/delete/<id>",methods=["DELETE"])
 def delete(id):
     machine = Machine.query.get(id)
     db.session.delete(machine)
     db.session.commit()
-    return "Delete machine successfully"
+    return "Delete machine successfully!"
