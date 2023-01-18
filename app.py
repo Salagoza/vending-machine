@@ -18,4 +18,3 @@ with app.app_context():
     from models import Machine,Product
 
     db.create_all()
-

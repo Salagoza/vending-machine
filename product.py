@@ -1,7 +1,6 @@
-from flask import Blueprint,request
+from flask import Blueprint,request,jsonify
 from db import db
 from models import Product
-from flask import jsonify
 from sqlalchemy.exc import SQLAlchemyError
 
 
@@ -37,7 +36,14 @@ Function to get all products.
 @product.route("/get",methods=["GET"])
 def get():
     lists = list(map(lambda l: l.to_dict(), Product.query.all()))
-    return jsonify({"products": lists})
+    return lists, 200
+
+"""
+Function to get product by id.
+"""
+@product.route("/get/<id>",methods=["GET"])
+def get_by_id(id):
+    return Product.query.get(id).to_dict() ,200
 
 """
 Function to update the product information.

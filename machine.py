@@ -44,7 +44,31 @@ def get():
             p["quantity"] = product.quantity
             m["stock"].append(p)
         result["machines"].append(m)
-    return result
+    return result,200
+
+"""
+Function to get machine by id
+"""
+@machine.route("/get/<id>")
+def get_by_id(id):
+    machine = Machine.query.get(id)
+    result = {}
+    result["id"] = machine.id
+    result["address"] = machine.address
+    result["name"] = machine.name
+    result["stock"] = []
+
+    for product in machine.stock:
+        p = {}
+        p["id"] = product.id
+        p["name"] = product.name
+        p["type"] = product.type
+        p["price"] = product.price
+        p["machine_id"] = product.machine_id
+        p["quantity"] = product.quantity
+        result["stock"].append(p)
+
+    return result,200
 
 """
 Function to update the vending machine name or adress.
@@ -70,7 +94,7 @@ Function to delete vending machine.
 def delete(id):    
     machine = Machine.query.get(id)
     db.session.delete(machine)
-    
+
     try: 
         db.session.commit()
     except SQLAlchemyError:
