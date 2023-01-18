@@ -1,7 +1,7 @@
 from flask import Blueprint,request
-from sqlalchemy.sql import text
 from db import db
 from models import Machine
+from sqlalchemy.exc import SQLAlchemyError
 
 machine = Blueprint('machine',__name__)
 
@@ -13,9 +13,13 @@ def create():
     name = request.form["name"]
     address = request.form["address"]
     new_machine = Machine(name,address)
-    db.session.add(new_machine)
-    db.session.commit()
-    return "Added new machine to the database!"
+    try:
+        db.session.add(new_machine)
+        db.session.commit()
+    except SQLAlchemyError:
+        db.session.rollback()
+        return "Something went wrong!",404
+    return "Added new machine to the database!",200
     
 """
 Function to get all vending machines.
@@ -52,15 +56,24 @@ def update(id):
     new_address = request.form["address"] or machine.address
     machine.name = new_name
     machine.address = new_address
-    db.session.commit()
-    return "Updated the vending machine information!"
+    try:
+        db.session.commit()
+    except SQLAlchemyError:
+        db.session.rollback()
+        return "Something went wrong!", 404
+    return "Updated the vending machine information!",200
 
 """
 Function to delete vending machine.
 """
 @machine.route("/delete/<id>",methods=["DELETE"])
-def delete(id):
+def delete(id):    
     machine = Machine.query.get(id)
     db.session.delete(machine)
-    db.session.commit()
-    return "Delete machine successfully!"
+    
+    try: 
+        db.session.commit()
+    except SQLAlchemyError:
+        db.session.rollback()
+        return "Something went wrong!",404
+    return "Delete machine successfully!",200

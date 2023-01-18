@@ -1,8 +1,9 @@
 from flask import Blueprint,request
-from sqlalchemy.sql import text
 from db import db
 from models import Product
 from flask import jsonify
+from sqlalchemy.exc import SQLAlchemyError
+
 
 product = Blueprint('product',__name__)
 
@@ -20,11 +21,15 @@ def create():
     if (product is None):
         new_product = Product(name,type,price,machine_id)
         db.session.add(new_product)
-        db.session.commit()
     else:
         product.quantity += 1
+
+    try: 
         db.session.commit()
-    return "Added new product to the database!"
+    except SQLAlchemyError:
+        db.session.rollback()
+        return "Something went wrong!", 404
+    return "Added new product to the database!",200
 
 """
 Function to get all products.
@@ -52,11 +57,14 @@ def update(id):
     product.type = new_type
     product.quantity = new_quantity
     product.price = new_price
-    db.session.commit()
 
-    return "Updated the product information"
+    try:
+        db.session.commit()
+    except SQLAlchemyError:
+        db.session.rollback()
+        return "Something went wrong!", 404
+    return "Updated the product information", 200
 
-    
 """
 Function to delete product.
 """
@@ -68,8 +76,11 @@ def delete():
     # If the stock level of that product is greater than 1 decrease the stock else delete the record.
     if (product.quantity != 1):
         product.quantity -= 1
-        db.session.commit()
     else:
         db.session.delete(product)
+    try: 
         db.session.commit()
-    return "Delete product from stock!"
+    except SQLAlchemyError:
+        db.session.rollback()
+        return "Something went wrong!",404
+    return "Delete product from stock!",200
