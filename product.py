@@ -15,20 +15,20 @@ def create():
     type = request.form["type"]
     price = request.form["price"]
     machine_id = request.form["machine_id"]
+    quantity = request.form["quantity"] 
     # If the new product already exists in the machine increase the stock else create insert as a new record.
     product = Product.query.filter(Product.name==name,Product.machine_id==machine_id).first()
     if (product is None):
-        new_product = Product(name,type,price,machine_id)
+        new_product = Product(name,type,price,machine_id,quantity)
         db.session.add(new_product)
     else:
-        product.quantity += 1
-
+        product.quantity += quantity
     try: 
         db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()
-        return "Something went wrong!", 404
-    return "Added new product to the database!",200
+        return "Something went wrong!", 500
+    return "Added a new product to the database!",200
 
 """
 Function to get all products.
@@ -43,7 +43,10 @@ Function to get product by id.
 """
 @product.route("/get/<id>",methods=["GET"])
 def get_by_id(id):
-    return Product.query.get(id).to_dict() ,200
+    product = Product.query.get(id)
+    if product == None:
+        return "No such product exsits in the database",404
+    return product.to_dict() ,200
 
 """
 Function to update the product information.
@@ -51,6 +54,9 @@ Function to update the product information.
 @product.route("/update/<id>",methods=["PUT"])
 def update(id):
     product = Product.query.get(id)
+    if product == None:
+        return "No such product exsits in the database",404
+    
     new_name = request.form["name"] or product.name
     new_type = request.form["type"] or product.type
     new_quantity = request.form["quantity"] or product.quantity
@@ -68,8 +74,8 @@ def update(id):
         db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()
-        return "Something went wrong!", 404
-    return "Updated the product information", 200
+        return "Something went wrong!", 500
+    return "Updated the product information!", 200
 
 """
 Function to delete product.
@@ -78,15 +84,18 @@ Function to delete product.
 def delete():
     name = request.form["name"]
     machine_id = request.form["machine_id"]
+    quantity = int(request.form["quantity"])
     product = Product.query.filter(Product.name==name,Product.machine_id==machine_id).first()
+    if product == None:
+        return "No such product exsits in the database",404
     # If the stock level of that product is greater than 1 decrease the stock else delete the record.
-    if (product.quantity != 1):
-        product.quantity -= 1
+    if (product.quantity > quantity):
+        product.quantity -= quantity
     else:
         db.session.delete(product)
     try: 
         db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()
-        return "Something went wrong!",404
+        return "Something went wrong!",500
     return "Delete product from stock!",200

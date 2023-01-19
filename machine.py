@@ -18,8 +18,8 @@ def create():
         db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()
-        return "Something went wrong!",404
-    return "Added new machine to the database!",200
+        return "Something went wrong!",500
+    return "Added a new machine to the database!",200
     
 """
 Function to get all vending machines.
@@ -52,6 +52,8 @@ Function to get machine by id
 @machine.route("/get/<id>")
 def get_by_id(id):
     machine = Machine.query.get(id)
+    if machine == None:
+        return "No such machine exsits in the database",404
     result = {}
     result["id"] = machine.id
     result["address"] = machine.address
@@ -76,6 +78,8 @@ Function to update the vending machine name or adress.
 @machine.route("/update/<id>",methods=["PUT"])
 def update(id):    
     machine = Machine.query.get(id)
+    if machine == None:
+        return "No such machine exsits in the database",404
     new_name = request.form["name"] or machine.name
     new_address = request.form["address"] or machine.address
     machine.name = new_name
@@ -84,7 +88,7 @@ def update(id):
         db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()
-        return "Something went wrong!", 404
+        return "Something went wrong!", 500
     return "Updated the vending machine information!",200
 
 """
@@ -93,11 +97,12 @@ Function to delete vending machine.
 @machine.route("/delete/<id>",methods=["DELETE"])
 def delete(id):    
     machine = Machine.query.get(id)
+    if machine == None:
+        return "No such machine exsits in the database",404
     db.session.delete(machine)
-
     try: 
         db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()
-        return "Something went wrong!",404
+        return "Something went wrong!",500
     return "Delete machine successfully!",200
