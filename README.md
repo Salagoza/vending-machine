@@ -8,8 +8,8 @@ Vending Mahcine Tracking Application to manage all the vending machine in MUIC u
 1.Initialize and activate virtual environment 
 
 ```
-python3 -m env env
-source env/bin/activate
+python3 -m venv venv
+source venv/bin/activate
 ```
 2.Install flask and sqlalchemy
 ```
