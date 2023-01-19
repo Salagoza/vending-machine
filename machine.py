@@ -47,13 +47,13 @@ def get():
     return result,200
 
 """
-Function to get machine by id
+Function to get machine by id.
 """
 @machine.route("/get/<id>")
 def get_by_id(id):
     machine = Machine.query.get(id)
     if machine == None:
-        return "No such machine exsits in the database",404
+        return "No such machine exists in the database!",404
     result = {}
     result["id"] = machine.id
     result["address"] = machine.address
@@ -79,7 +79,7 @@ Function to update the vending machine name or adress.
 def update(id):    
     machine = Machine.query.get(id)
     if machine == None:
-        return "No such machine exsits in the database",404
+        return "No such machine exists in the database!",404
     new_name = request.form["name"] or machine.name
     new_address = request.form["address"] or machine.address
     machine.name = new_name
@@ -98,7 +98,7 @@ Function to delete vending machine.
 def delete(id):    
     machine = Machine.query.get(id)
     if machine == None:
-        return "No such machine exsits in the database",404
+        return "No such machine exists in the database!",404
     db.session.delete(machine)
     try: 
         db.session.commit()

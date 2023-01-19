@@ -45,7 +45,7 @@ Function to get product by id.
 def get_by_id(id):
     product = Product.query.get(id)
     if product == None:
-        return "No such product exsits in the database",404
+        return "No such product exists in the database!",404
     return product.to_dict() ,200
 
 """
@@ -55,7 +55,7 @@ Function to update the product information.
 def update(id):
     product = Product.query.get(id)
     if product == None:
-        return "No such product exsits in the database",404
+        return "No such product exists in the database!",404
     
     new_name = request.form["name"] or product.name
     new_type = request.form["type"] or product.type
@@ -87,7 +87,7 @@ def delete():
     quantity = int(request.form["quantity"])
     product = Product.query.filter(Product.name==name,Product.machine_id==machine_id).first()
     if product == None:
-        return "No such product exsits in the database",404
+        return "No such product exists in the database",404
     # If the stock level of that product is greater than 1 decrease the stock else delete the record.
     if (product.quantity > quantity):
         product.quantity -= quantity
