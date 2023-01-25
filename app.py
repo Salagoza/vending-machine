@@ -1,7 +1,8 @@
 from flask import Flask
+
+from db import db
 from machine import machine
 from product import product
-from db import db
 
 DB_NAME = "database.db"
 
@@ -15,6 +16,4 @@ app.register_blueprint(product,url_prefix="/api/product")
    
 
 with app.app_context():
-    from models import Machine,Product
-
     db.create_all()
