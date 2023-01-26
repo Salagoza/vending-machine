@@ -3,13 +3,13 @@ from db import db
 from models import Machine
 from sqlalchemy.exc import SQLAlchemyError
 
-machine = Blueprint('machine', __name__)
+machine_blueprint = Blueprint('machine', __name__)
 
 """
 Function to create vending machine.
 """
-@machine.route("/create", methods=["POST"])
-def create():
+@machine_blueprint.route("/create", methods=["POST"])
+def create_machine():
     name = request.form["name"]
     address = request.form["address"]
     new_machine = Machine(name, address)
@@ -25,66 +25,60 @@ def create():
 """
 Function to get all vending machines.
 """
-@machine.route("/get", methods=["GET"])
-def get():
+@machine_blueprint.route("/get", methods=["GET"])
+def get_all_machines():
     machines = Machine.query.all()
-    result = {"machines": []}
+    response = {"machines": []}
     for machine in machines:
-        m = {}
-        m["id"] = machine.id
-        m["address"] = machine.address
-        m["name"] = machine.name
-        m["stock"] = []
-        for product in machine.stock:
-            p = {}
-            p["id"] = product.id
-            p["name"] = product.name
-            p["type"] = product.type
-            p["price"] = product.price
-            p["machine_id"] = product.machine_id
-            p["quantity"] = product.quantity
-            m["stock"].append(p)
-        result["machines"].append(m)
-    return result, 200
+        data = create_machine_response(machine)
+        response["machines"].append(data)
+    return response, 200
 
 """
 Function to get machine by id.
 """
-@machine.route("/get/<id>")
-def get_by_id(id):
-    machine = Machine.query.get(id)
+@machine_blueprint.route("/get/<machine_id>")
+def get_machine_by_id(machine_id: int):
+    machine = Machine.query.get(machine_id)
     if machine is None:
         return "No such machine exists in the database!", 404
-    result = {}
-    result["id"] = machine.id
-    result["address"] = machine.address
-    result["name"] = machine.name
-    result["stock"] = []
+    response = create_machine_response(machine)
+    return response, 200
 
+"""
+Function to convert machine object to a dict.
+"""
+def create_machine_response(machine: Machine):
+    machine_dict = {
+        "id": machine.id,
+        "address": machine.address,
+        "name": machine.name,
+        "stock": []}
     for product in machine.stock:
-        p = {}
-        p["id"] = product.id
-        p["name"] = product.name
-        p["type"] = product.type
-        p["price"] = product.price
-        p["machine_id"] = product.machine_id
-        p["quantity"] = product.quantity
-        result["stock"].append(p)
-
-    return result, 200
+        product_dict = {
+            "id": product.id,
+            "name": product.name,
+            "type": product.category,
+            "price": product.price,
+            "machine_id": machine.id,
+            "quantity": product.quantity}
+        machine_dict["stock"].append(product_dict)
+    return machine_dict
 
 """
 Function to update the vending machine name or address.
 """
-@machine.route("/update/<id>", methods=["PUT"])
-def update(id):
-    machine = Machine.query.get(id)
+@machine_blueprint.route("/update/<machine_id>", methods=["PUT"])
+def update_machine(machine_id: int):
+    machine = Machine.query.get(machine_id)
     if machine is None:
         return "No such machine exists in the database!", 404
+
     new_name = request.form["name"] or machine.name
     new_address = request.form["address"] or machine.address
     machine.name = new_name
     machine.address = new_address
+
     try:
         db.session.commit()
     except SQLAlchemyError:
@@ -95,15 +89,19 @@ def update(id):
 """
 Function to delete vending machine.
 """
-@machine.route("/delete/<id>", methods=["DELETE"])
-def delete(id):
-    machine = Machine.query.get(id)
+@machine_blueprint.route("/delete/<machine_id>", methods=["DELETE"])
+def delete_machine(machine_id: int):
+    machine = Machine.query.get(machine_id)
+
     if machine is None:
         return "No such machine exists in the database!", 404
-    db.session.delete(machine)
+
     try:
+        db.session.delete(machine)
         db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()
         return "Something went wrong!", 500
     return "Delete machine successfully!", 200
+
+
