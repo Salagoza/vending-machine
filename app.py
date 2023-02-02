@@ -1,14 +1,17 @@
 from flask import Flask
+
 from db import db
 from machine import machine_blueprint
 from product import product_blueprint
 
 DB_NAME = "database.db"
 
-def create_app(database_uri=f"sqlite:///{DB_NAME}"):
+
+def create_app(database_uri: str = f"sqlite:///{DB_NAME}") -> Flask:
+    """Create the application."""
     app = Flask(__name__)
     app.config["SQLALCHEMY_DATABASE_URI"] = database_uri
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
     db.init_app(app)
 
     app.register_blueprint(machine_blueprint, url_prefix="/api/machine")
@@ -18,5 +21,3 @@ def create_app(database_uri=f"sqlite:///{DB_NAME}"):
         db.create_all()
 
     return app
-
-

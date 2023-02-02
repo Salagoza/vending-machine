@@ -10,6 +10,8 @@ packages = [{include = "vending_machine"}]
 python = "^3.10"
 Flask = "^2.2.2"
 pre-commit = "^3.0.3"
+pytest = "^7.2.1"
+pytest-cov = "^4.0.0"
 
 
 [build-system]
