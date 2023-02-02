@@ -83,8 +83,8 @@ def update_machine(machine_id: int) -> tuple[Response, int]:
         db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()
-        return jsonify("Something went wrong!"), 500
-    return jsonify("Updated the vending machine information!"), 200
+        return jsonify({"message": "Something went wrong!"}), 500
+    return jsonify({"message": "Updated the vending machine information!"}), 200
 
 
 @machine_blueprint.route("/delete/<machine_id>", methods=["DELETE"])

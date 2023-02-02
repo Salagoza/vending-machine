@@ -45,7 +45,7 @@ def get_product_by_id(product_id: int) -> tuple[Response, int]:
     """Get product by id."""
     product = Product.query.get(product_id)
     if product is None:
-        return jsonify("No such product exists in the database!"), 404
+        return jsonify({"message": "No such product exists in the database!"}), 404
     response = product.to_dict()
     return jsonify(response), 200
 
@@ -62,7 +62,7 @@ def update_product(product_id: int) -> tuple[Response, int]:
     new_price = request.form["price"] or product.price
 
     if int(new_quantity) < 1:
-        return jsonify("The quantity must be greater than 1!"), 400
+        return jsonify({"message": "The quantity must be greater than 1!"}), 400
 
     product.name = new_name
     product.category = new_type
@@ -73,8 +73,8 @@ def update_product(product_id: int) -> tuple[Response, int]:
         db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()
-        return jsonify("Something went wrong!"), 500
-    return jsonify("Updated the product information!"), 200
+        return jsonify({"message": "Something went wrong!"}), 500
+    return jsonify({"message": "Updated the product information!"}), 200
 
 
 @product_blueprint.route("/delete", methods=["DELETE"])
@@ -87,7 +87,7 @@ def delete_product() -> tuple[Response, int]:
         Product.name == name, Product.machine_id == machine_id
     ).first()
     if product is None:
-        return jsonify("No such product exists in the database"), 404
+        return jsonify({"message": "No such product exists in the database"}), 404
 
     if product.quantity > quantity:
         product.quantity -= quantity
@@ -98,5 +98,5 @@ def delete_product() -> tuple[Response, int]:
         db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()
-        return jsonify("Something went wrong!"), 500
-    return jsonify("Delete product from stock!"), 200
+        return jsonify({"message": "Something went wrong!"}), 500
+    return jsonify({"message": "Delete product from stock!"}), 200
