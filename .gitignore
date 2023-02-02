@@ -1,0 +1,5 @@
+.Python
+env/
+instance/
+.idea/
+.pytest_cache/
