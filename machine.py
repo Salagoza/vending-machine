@@ -29,42 +29,19 @@ def get_all_machines() -> Response:
     machines = Machine.query.all()
     response = {"machines": []}
     for machine in machines:
-        data = create_machine_response(machine)
+        data = machine.to_dict()
         response["machines"].append(data)
     return jsonify(response)
 
 
 @machine_blueprint.route("/get/<machine_id>")
-def get_machine_by_id(
-    machine_id: int,
-) -> tuple[Response, int]:
+def get_machine_by_id(machine_id: int) -> tuple[Response, int]:
     """Get machine by id."""
     machine = Machine.query.get(machine_id)
     if machine is None:
         return jsonify({"message": "No such machine exists in the database!"}), 404
-    response = create_machine_response(machine)
+    response = machine.to_dict()
     return jsonify(response), 200
-
-
-def create_machine_response(machine: Machine) -> dict:
-    """Convert machine object to a dict."""
-    machine_dict = {
-        "id": machine.id,
-        "address": machine.address,
-        "name": machine.name,
-        "stock": [],
-    }
-    for product in machine.stock:
-        product_dict = {
-            "id": product.id,
-            "name": product.name,
-            "type": product.category,
-            "price": product.price,
-            "machine_id": machine.id,
-            "quantity": product.quantity,
-        }
-        machine_dict["stock"].append(product_dict)
-    return machine_dict
 
 
 @machine_blueprint.route("/update/<machine_id>", methods=["PUT"])

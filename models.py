@@ -14,6 +14,26 @@ class Machine(db.Model):
         self.name = name
         self.address = address
 
+    def to_dict(self) -> dict:
+        """Convert machine object to a dict."""
+        machine_dict = {
+            "id": self.id,
+            "address": self.address,
+            "name": self.name,
+            "stock": [],
+        }
+        for product in self.stock:
+            product_dict = {
+                "id": product.id,
+                "name": product.name,
+                "type": product.category,
+                "price": product.price,
+                "machine_id": self.id,
+                "quantity": product.quantity,
+            }
+            machine_dict["stock"].append(product_dict)
+        return machine_dict
+
 
 class Product(db.Model):
     """Model for vending product."""
