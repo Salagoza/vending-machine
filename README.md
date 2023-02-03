@@ -5,7 +5,7 @@ Vending Mahcine Tracking Application to manage all the vending machine in MUIC u
 
 ## Installation
 
-1.Initialize and activate virtual environment 
+1.Initialize and activate virtual environment
 
 ```
 python3 -m venv venv
@@ -23,7 +23,7 @@ flask run
 
 
 
-    
+
 ## Machine APIs
 
 ### POST ```/api/machine/create```
@@ -41,9 +41,9 @@ Added a new machine to the database!
 ```
 **Possible Error**
 
-| Error Code | Description   | 
-| :---         | :---        | 
-| 500 Internal Server Error  | Something went wrong when adding data to the database.  | 
+| Error Code | Description   |
+| :---         | :---        |
+| 500 Internal Server Error  | Something went wrong when adding data to the database.  |
 
 ### GET ```/api/machine/get/<id>```
 
@@ -87,10 +87,10 @@ Method to get the vending machine with its stock by id.
 ```
 **Possible Error**
 
-| Error Code | Description   | 
-| :---         | :---        | 
-| 404 Not Found  | Can’t find the machine with the id given in the database.| 
-| 500 Internal Server Error | Something went wrong when getting data from the database.| 
+| Error Code | Description   |
+| :---         | :---        |
+| 404 Not Found  | Can’t find the machine with the id given in the database.|
+| 500 Internal Server Error | Something went wrong when getting data from the database.|
 
 ### GET ```/api/machine/get```
 
@@ -158,8 +158,8 @@ Method to get all the vending machines with its stock.
 }
 ```
 
-| Error Code | Description   | 
-| :---         | :---        | 
+| Error Code | Description   |
+| :---         | :---        |
 | 500 Internal Server Error  | Something went wrong when getting data to the database.  |
 
 
@@ -178,8 +178,8 @@ Updated the vending machine information!
 ```
 **Possible Error**
 
-| Error Code | Description   | 
-| :---         | :---        | 
+| Error Code | Description   |
+| :---         | :---        |
 | 404 Not Found  | Can’t find the machine with the id given in the database.|
 | 500 Internal Server Error  | Something went wrong while updating machine information. |
 
@@ -191,8 +191,8 @@ Method to delete the vending machine by id.
 ```
 Delete machine successfully!
 ```
-| Error Code | Description   | 
-| :---         | :---        | 
+| Error Code | Description   |
+| :---         | :---        |
 | 404 Not Found  | Can’t find the machine with the id given in the database.|
 | 500 Internal Server Error  | Something went wrong while deleting machine from the database. |
 
@@ -224,9 +224,9 @@ Added a new product to the database!
 ```
 **Possible Error**
 
-| Error Code | Description   | 
-| :---         | :---        | 
-| 500 Internal Server Error  | Something went wrong when adding data to the database.  | 
+| Error Code | Description   |
+| :---         | :---        |
+| 500 Internal Server Error  | Something went wrong when adding data to the database.  |
 
 ### GET ```/api/product/get/<id>```
 
@@ -243,8 +243,8 @@ Method to get a product by id.
     "type": "Snack"
 }
 ```
-| Error Code | Description   | 
-| :---         | :---        | 
+| Error Code | Description   |
+| :---         | :---        |
 | 404 Not Found  | Can’t find the product with the id given in the database.|
 | 500 Internal Server Error  | Something went wrong when getting data from the database. |
 
@@ -300,8 +300,8 @@ Method to get all the products.
 ```
 **Possible Error**
 
-| Error Code | Description   | 
-| :---         | :---        | 
+| Error Code | Description   |
+| :---         | :---        |
 | 500 Internal Server Error  | Something went wrong when getting data from the database. |
 
 
@@ -324,11 +324,11 @@ Updated the product information!
 
 **Possible Error**
 
-| Error Code | Description   | 
-| :---         | :---        | 
-| 400 Bad Request | The quantity has to be >= 1 | 
+| Error Code | Description   |
+| :---         | :---        |
+| 400 Bad Request | The quantity has to be >= 1 |
 | 404 Not Found  | Can’t find the product with the id given in the database.|
-| 500 Internal Server Error | Something went wrong when updating data to the database. | 
+| 500 Internal Server Error | Something went wrong when updating data to the database. |
 
 ### DELETE ```/api/product/delete/<id>```
 Method to delete the product from the vending machine.
@@ -343,8 +343,7 @@ Method to delete the product from the vending machine.
 ```
 Delete product from stock!
 ```
-| Error Code | Description   | 
-| :---         | :---        | 
+| Error Code | Description   |
+| :---         | :---        |
 | 404 Not Found  | Can’t find the product with the id given in the database.|
 | 500 Internal Server Error  | Something went wrong when deleting data from the database. |
-

@@ -1,15 +1,16 @@
-from flask import Blueprint, request
-from db import db
-from models import Machine
+from flask import Blueprint, Response, jsonify, request
 from sqlalchemy.exc import SQLAlchemyError
 
-machine_blueprint = Blueprint('machine', __name__)
+import constants
+from db import db
+from models import Machine
 
-"""
-Function to create vending machine.
-"""
+machine_blueprint = Blueprint("machine", __name__)
+
+
 @machine_blueprint.route("/create", methods=["POST"])
-def create_machine():
+def create_machine() -> tuple[Response, int]:
+    """Create vending machine."""
     name = request.form["name"]
     address = request.form["address"]
     new_machine = Machine(name, address)
@@ -18,61 +19,38 @@ def create_machine():
         db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()
-        return "Something went wrong!", 500
-    return "Added a new machine to the database!", 200
+
+        return jsonify({"message": constants.MSG_500}), 500
+    return jsonify({"message": constants.MSG_200}), 200
 
 
-"""
-Function to get all vending machines.
-"""
 @machine_blueprint.route("/get", methods=["GET"])
-def get_all_machines():
+def get_all_machines() -> Response:
+    """Get all vending machines."""
     machines = Machine.query.all()
     response = {"machines": []}
     for machine in machines:
-        data = create_machine_response(machine)
+        data = machine.to_dict()
         response["machines"].append(data)
-    return response, 200
+    return jsonify(response)
 
-"""
-Function to get machine by id.
-"""
+
 @machine_blueprint.route("/get/<machine_id>")
-def get_machine_by_id(machine_id: int):
+def get_machine_by_id(machine_id: int) -> tuple[Response, int]:
+    """Get machine by id."""
     machine = Machine.query.get(machine_id)
     if machine is None:
-        return "No such machine exists in the database!", 404
-    response = create_machine_response(machine)
-    return response, 200
+        return jsonify({"message": constants.MSG_404}), 404
+    response = machine.to_dict()
+    return jsonify(response), 200
 
-"""
-Function to convert machine object to a dict.
-"""
-def create_machine_response(machine: Machine):
-    machine_dict = {
-        "id": machine.id,
-        "address": machine.address,
-        "name": machine.name,
-        "stock": []}
-    for product in machine.stock:
-        product_dict = {
-            "id": product.id,
-            "name": product.name,
-            "type": product.category,
-            "price": product.price,
-            "machine_id": machine.id,
-            "quantity": product.quantity}
-        machine_dict["stock"].append(product_dict)
-    return machine_dict
 
-"""
-Function to update the vending machine name or address.
-"""
 @machine_blueprint.route("/update/<machine_id>", methods=["PUT"])
-def update_machine(machine_id: int):
+def update_machine(machine_id: int) -> tuple[Response, int]:
+    """Update the vending machine name or address."""
     machine = Machine.query.get(machine_id)
     if machine is None:
-        return "No such machine exists in the database!", 404
+        return jsonify({"message": constants.MSG_404}), 404
 
     new_name = request.form["name"] or machine.name
     new_address = request.form["address"] or machine.address
@@ -83,25 +61,21 @@ def update_machine(machine_id: int):
         db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()
-        return "Something went wrong!", 500
-    return "Updated the vending machine information!", 200
+        return jsonify({"message": constants.MSG_500}), 500
+    return jsonify({"message": constants.MSG_200}), 200
 
-"""
-Function to delete vending machine.
-"""
+
 @machine_blueprint.route("/delete/<machine_id>", methods=["DELETE"])
-def delete_machine(machine_id: int):
+def delete_machine(machine_id: int) -> tuple[Response, int]:
+    """Delete vending machine."""
     machine = Machine.query.get(machine_id)
 
     if machine is None:
-        return "No such machine exists in the database!", 404
-
+        return jsonify({"message": constants.MSG_404}), 404
     try:
         db.session.delete(machine)
         db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()
-        return "Something went wrong!", 500
-    return "Delete machine successfully!", 200
-
-
+        return jsonify({"message": constants.MSG_500}), 500
+    return jsonify({"message": constants.MSG_200}), 200

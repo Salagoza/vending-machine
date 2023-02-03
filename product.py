@@ -1,22 +1,25 @@
-from flask import Blueprint, request, jsonify
-from db import db
-from models import Product
+from flask import Blueprint, Response, jsonify, request
 from sqlalchemy.exc import SQLAlchemyError
 
-product_blueprint = Blueprint('product', __name__)
+import constants
+from db import db
+from models import Product
 
-"""
-Function to create product.
-"""
+product_blueprint = Blueprint("product", __name__)
+
+
 @product_blueprint.route("/create", methods=["POST"])
-def create_product():
+def create_product() -> tuple[Response, int]:
+    """Create product."""
     name = request.form["name"]
     category = request.form["type"]
-    price = request.form["price"]
-    machine_id = request.form["machine_id"]
-    quantity = request.form["quantity"]
+    price = int(request.form["price"])
+    machine_id = int(request.form["machine_id"])
+    quantity = int(request.form["quantity"])
 
-    product = Product.query.filter(Product.name == name, Product.machine_id == machine_id).first()
+    product = Product.query.filter(
+        Product.name == name, Product.machine_id == machine_id
+    ).first()
     if product is None:
         new_product = Product(name, category, price, machine_id, quantity)
         db.session.add(new_product)
@@ -27,43 +30,40 @@ def create_product():
         db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()
-        return "Something went wrong!", 500
-    return "Added a new product to the database!", 200
+        return jsonify({"message": constants.MSG_500}), 500
+    return jsonify({"message": constants.MSG_200}), 200
 
-"""
-Function to get all products.
-"""
+
 @product_blueprint.route("/get", methods=["GET"])
-def get_all_products():
+def get_all_products() -> tuple[Response, int]:
+    """Get all products."""
     response = list(map(lambda l: l.to_dict(), Product.query.all()))
-    return response, 200
+    return jsonify(response), 200
 
-"""
-Function to get product by id.
-"""
+
 @product_blueprint.route("/get/<product_id>", methods=["GET"])
-def get_product_by_id(product_id: int):
+def get_product_by_id(product_id: int) -> tuple[Response, int]:
+    """Get product by id."""
     product = Product.query.get(product_id)
     if product is None:
-        return "No such product exists in the database!", 404
+        return jsonify({"message": constants.MSG_404}), 404
     response = product.to_dict()
-    return response, 200
+    return jsonify(response), 200
 
-"""
-Function to update the product information.
-"""
+
 @product_blueprint.route("/update/<product_id>", methods=["PUT"])
-def update_product(product_id: int):
+def update_product(product_id: int) -> tuple[Response, int]:
+    """Update the product information."""
     product = Product.query.get(product_id)
     if product is None:
-        return "No such product exists in the database!", 404
+        return jsonify("No such product exists in the database!"), 404
     new_name = request.form["name"] or product.name
     new_type = request.form["type"] or product.category
     new_quantity = request.form["quantity"] or product.quantity
     new_price = request.form["price"] or product.price
 
     if int(new_quantity) < 1:
-        return "The quantity must be greater than 1!", 400
+        return jsonify({"message": constants.MSG_400}), 400
 
     product.name = new_name
     product.category = new_type
@@ -74,20 +74,21 @@ def update_product(product_id: int):
         db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()
-        return "Something went wrong!", 500
-    return "Updated the product information!", 200
+        return jsonify({"message": constants.MSG_500}), 500
+    return jsonify({"message": constants.MSG_200}), 200
 
-"""
-Function to delete product.
-"""
+
 @product_blueprint.route("/delete", methods=["DELETE"])
-def delete_product():
+def delete_product() -> tuple[Response, int]:
+    """Delete product."""
     name = request.form["name"]
     machine_id = request.form["machine_id"]
     quantity = int(request.form["quantity"])
-    product = Product.query.filter(Product.name == name, Product.machine_id == machine_id).first()
+    product = Product.query.filter(
+        Product.name == name, Product.machine_id == machine_id
+    ).first()
     if product is None:
-        return "No such product exists in the database", 404
+        return jsonify({"message": constants.MSG_404}), 404
 
     if product.quantity > quantity:
         product.quantity -= quantity
@@ -98,5 +99,5 @@ def delete_product():
         db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()
-        return "Something went wrong!", 500
-    return "Delete product from stock!", 200
+        return jsonify({"message": constants.MSG_500}), 500
+    return jsonify({"message": constants.MSG_200}), 200
