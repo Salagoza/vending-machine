@@ -1,12 +1,14 @@
 from flask import Flask
 from flask.testing import FlaskClient
 
+import constants
 from models import Machine
 
 
 def test_create_machine_200(client: FlaskClient, app: Flask):
     client.post(
-        "/api/machine/create", data={"name": "Machine1", "address": "Tennis Court"}
+        constants.create_machine_endpoint,
+        data={"name": "Machine1", "address": "IC Bld. Floor.2"},
     )
     with app.app_context():
         assert Machine.query.count() == 1
@@ -15,10 +17,12 @@ def test_create_machine_200(client: FlaskClient, app: Flask):
 
 def test_create_machine_500(client: FlaskClient, app: Flask):
     client.post(
-        "/api/machine/create", data={"name": "Machine1", "address": "Tennis Court"}
+        constants.create_machine_endpoint,
+        data={"name": "Machine1", "address": "IC Bld. Floor.3"},
     )
     response = client.post(
-        "/api/machine/create", data={"name": "Machine1", "address": "Tennis Court"}
+        constants.create_machine_endpoint,
+        data={"name": "Machine1", "address": "IC Bld. Floor.3"},
     )
     with app.app_context():
         assert response.status_code == 500
@@ -26,9 +30,13 @@ def test_create_machine_500(client: FlaskClient, app: Flask):
 
 def test_get_all_machine(client: FlaskClient, app: Flask):
     client.post(
-        "/api/machine/create", data={"name": "Machine1", "address": "Tennis Court"}
+        constants.create_machine_endpoint,
+        data={"name": "Machine1", "address": "Aditayathorn Bld. Floor.1"},
     )
-    client.post("/api/machine/create", data={"name": "Machine2", "address": "IC Bld."})
+    client.post(
+        constants.create_machine_endpoint,
+        data={"name": "Machine2", "address": "Aditayathorn Bld. Floor.2"},
+    )
     response = client.get("/api/machine/get")
     with app.app_context():
         assert response.status_code == 200
@@ -37,7 +45,8 @@ def test_get_all_machine(client: FlaskClient, app: Flask):
 
 def test_get_machine_by_id_200(client: FlaskClient, app: Flask):
     client.post(
-        "/api/machine/create", data={"name": "Machine1", "address": "Tennis Court"}
+        constants.create_machine_endpoint,
+        data={"name": "Machine1", "address": "IC Bld. 1502 Com Sci Lab"},
     )
     response = client.get("/api/machine/get/1")
     assert response.status_code == 200
@@ -45,7 +54,8 @@ def test_get_machine_by_id_200(client: FlaskClient, app: Flask):
 
 def test_get_machine_by_id_404(client: FlaskClient, app: Flask):
     client.post(
-        "/api/machine/create", data={"name": "Machine1", "address": "Tennis Court"}
+        constants.create_machine_endpoint,
+        data={"name": "Machine1", "address": "Tennis Court"},
     )
     response = client.get("/api/machine/get/2")
     assert response.status_code == 404
@@ -53,7 +63,8 @@ def test_get_machine_by_id_404(client: FlaskClient, app: Flask):
 
 def test_update_machine_200(client: FlaskClient, app: Flask):
     client.post(
-        "/api/machine/create", data={"name": "Machine1", "address": "Tennis Court"}
+        constants.create_machine_endpoint,
+        data={"name": "Machine1", "address": "Tennis Court"},
     )
     client.put(
         "/api/machine/update/1", data={"name": "Machine2", "address": "Ic Building"}
@@ -66,10 +77,12 @@ def test_update_machine_200(client: FlaskClient, app: Flask):
 
 def test_update_machine_404(client: FlaskClient, app: Flask):
     client.post(
-        "/api/machine/create", data={"name": "Machine1", "address": "Tennis Court"}
+        constants.create_machine_endpoint,
+        data={"name": "Machine1", "address": "BasketBall Court"},
     )
     response = client.put(
-        "/api/machine/update/2", data={"name": "Machine2", "address": "Ic Building"}
+        constants.update_machine_endpoint + "/2",
+        data={"name": "Machine2", "address": "Swimming Pool"},
     )
     with app.app_context():
         assert response.status_code == 404
@@ -77,9 +90,10 @@ def test_update_machine_404(client: FlaskClient, app: Flask):
 
 def test_delete_machine_200(client: FlaskClient, app: Flask):
     client.post(
-        "/api/machine/create", data={"name": "Machine1", "address": "Tennis Court"}
+        constants.create_machine_endpoint,
+        data={"name": "Machine1", "address": "Badminton Court"},
     )
-    client.delete("/api/machine/delete/1")
+    client.delete(constants.delete_machine_endpoint + "/1")
 
     with app.app_context():
         assert Machine.query.count() == 0
@@ -87,9 +101,10 @@ def test_delete_machine_200(client: FlaskClient, app: Flask):
 
 def test_delete_machine_404(client: FlaskClient, app: Flask):
     client.post(
-        "/api/machine/create", data={"name": "Machine1", "address": "Tennis Court"}
+        constants.create_machine_endpoint,
+        data={"name": "Machine1", "address": "Football Field"},
     )
-    response = client.delete("/api/machine/delete/2")
+    response = client.delete(constants.delete_machine_endpoint + "/2")
 
     with app.app_context():
         assert response.status_code == 404

@@ -1,15 +1,17 @@
 from flask import Flask
 from flask.testing import FlaskClient
 
+import constants
 from models import Product
 
 
 def test_create_product(client: FlaskClient, app: Flask):
     client.post(
-        "/api/machine/create", data={"name": "Machine1", "address": "Tennis Court"}
+        constants.create_machine_endpoint,
+        data={"name": "Machine1", "address": "Apple Store"},
     )
     client.post(
-        "/api/product/create",
+        constants.create_product_endpoint,
         data={
             "name": "Lipton",
             "price": 20,
@@ -25,10 +27,11 @@ def test_create_product(client: FlaskClient, app: Flask):
 
 def test_create_product_already_exists(client: FlaskClient, app: Flask):
     client.post(
-        "/api/machine/create", data={"name": "Machine1", "address": "Tennis Court"}
+        constants.create_machine_endpoint,
+        data={"name": "Machine1", "address": "Seven 11"},
     )
     client.post(
-        "/api/product/create",
+        constants.create_product_endpoint,
         data={
             "name": "Lipton",
             "price": 20,
@@ -38,7 +41,7 @@ def test_create_product_already_exists(client: FlaskClient, app: Flask):
         },
     )
     client.post(
-        "/api/product/create",
+        constants.create_product_endpoint,
         data={
             "name": "Lipton",
             "price": 20,
@@ -55,7 +58,7 @@ def test_create_product_already_exists(client: FlaskClient, app: Flask):
 
 def test_get_all_product(client: FlaskClient, app: Flask):
     client.post(
-        "/api/product/create",
+        constants.create_product_endpoint,
         data={
             "name": "Lipton",
             "price": 20,
@@ -65,7 +68,7 @@ def test_get_all_product(client: FlaskClient, app: Flask):
         },
     )
     client.post(
-        "/api/product/create",
+        constants.create_product_endpoint,
         data={
             "name": "Ichitan Lemon",
             "price": 20,
@@ -83,7 +86,7 @@ def test_get_all_product(client: FlaskClient, app: Flask):
 
 def test_get_product_by_id_200(client: FlaskClient, app: Flask):
     client.post(
-        "/api/product/create",
+        constants.create_product_endpoint,
         data={
             "name": "Lipton",
             "price": 20,
@@ -98,7 +101,7 @@ def test_get_product_by_id_200(client: FlaskClient, app: Flask):
 
 def test_get_product_by_id_404(client: FlaskClient, app: Flask):
     client.post(
-        "/api/product/create",
+        constants.create_product_endpoint,
         data={
             "name": "Lipton",
             "price": 20,
@@ -113,7 +116,7 @@ def test_get_product_by_id_404(client: FlaskClient, app: Flask):
 
 def test_update_product_200(client: FlaskClient, app: Flask):
     client.post(
-        "/api/product/create",
+        constants.create_product_endpoint,
         data={
             "name": "Lipton",
             "price": 20,
@@ -123,7 +126,7 @@ def test_update_product_200(client: FlaskClient, app: Flask):
         },
     )
     response = client.put(
-        "/api/product/update/1",
+        constants.update_product_endpoint + "/1",
         data={"name": "", "price": "", "type": "", "quantity": 2},
     )
     with app.app_context():
@@ -134,7 +137,7 @@ def test_update_product_200(client: FlaskClient, app: Flask):
 
 def test_update_product_400(client: FlaskClient, app: Flask):
     client.post(
-        "/api/product/create",
+        constants.create_product_endpoint,
         data={
             "name": "Lipton",
             "price": 20,
@@ -144,7 +147,7 @@ def test_update_product_400(client: FlaskClient, app: Flask):
         },
     )
     response = client.put(
-        "/api/product/update/1",
+        constants.update_product_endpoint + "/1",
         data={"name": "", "price": "", "type": "", "quantity": 0},
     )
     with app.app_context():
@@ -153,7 +156,7 @@ def test_update_product_400(client: FlaskClient, app: Flask):
 
 def test_update_product_404(client: FlaskClient, app: Flask):
     client.post(
-        "/api/product/create",
+        constants.create_product_endpoint,
         data={
             "name": "Lipton",
             "price": 20,
@@ -163,7 +166,7 @@ def test_update_product_404(client: FlaskClient, app: Flask):
         },
     )
     response = client.put(
-        "/api/product/update/2",
+        constants.update_product_endpoint + "/2",
         data={"name": "", "price": "", "type": "", "quantity": 2},
     )
     with app.app_context():
@@ -172,7 +175,7 @@ def test_update_product_404(client: FlaskClient, app: Flask):
 
 def test_get_delete_product_200(client: FlaskClient, app: Flask):
     client.post(
-        "/api/product/create",
+        constants.create_product_endpoint,
         data={
             "name": "Lipton",
             "price": 20,
@@ -182,7 +185,8 @@ def test_get_delete_product_200(client: FlaskClient, app: Flask):
         },
     )
     response = client.delete(
-        "/api/product/delete", data={"name": "Lipton", "machine_id": 1, "quantity": 10}
+        constants.delete_product_endpoint,
+        data={"name": "Lipton", "machine_id": 1, "quantity": 10},
     )
 
     with app.app_context():
@@ -192,7 +196,7 @@ def test_get_delete_product_200(client: FlaskClient, app: Flask):
 
 def test_get_delete_product_partial_200(client: FlaskClient, app: Flask):
     client.post(
-        "/api/product/create",
+        constants.create_product_endpoint,
         data={
             "name": "Lipton",
             "price": 20,
@@ -202,7 +206,8 @@ def test_get_delete_product_partial_200(client: FlaskClient, app: Flask):
         },
     )
     response = client.delete(
-        "/api/product/delete", data={"name": "Lipton", "machine_id": 1, "quantity": 5}
+        constants.delete_product_endpoint,
+        data={"name": "Lipton", "machine_id": 1, "quantity": 5},
     )
 
     with app.app_context():
@@ -212,7 +217,7 @@ def test_get_delete_product_partial_200(client: FlaskClient, app: Flask):
 
 def test_delete_product_404(client: FlaskClient, app: Flask):
     client.post(
-        "/api/product/create",
+        constants.create_product_endpoint,
         data={
             "name": "Lipton",
             "price": 20,
@@ -222,7 +227,8 @@ def test_delete_product_404(client: FlaskClient, app: Flask):
         },
     )
     response = client.delete(
-        "/api/product/delete", data={"name": "Lipton", "machine_id": 2, "quantity": 10}
+        constants.delete_product_endpoint,
+        data={"name": "Lipton", "machine_id": 2, "quantity": 10},
     )
 
     with app.app_context():

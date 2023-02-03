@@ -1,6 +1,7 @@
 from flask import Blueprint, Response, jsonify, request
 from sqlalchemy.exc import SQLAlchemyError
 
+import constants
 from db import db
 from models import Machine
 
@@ -19,8 +20,8 @@ def create_machine() -> tuple[Response, int]:
     except SQLAlchemyError:
         db.session.rollback()
 
-        return jsonify({"message": "Something went wrong!"}), 500
-    return jsonify({"message": "Added a new machine to the database!"}), 200
+        return jsonify({"message": constants.MSG_500}), 500
+    return jsonify({"message": constants.MSG_200}), 200
 
 
 @machine_blueprint.route("/get", methods=["GET"])
@@ -39,7 +40,7 @@ def get_machine_by_id(machine_id: int) -> tuple[Response, int]:
     """Get machine by id."""
     machine = Machine.query.get(machine_id)
     if machine is None:
-        return jsonify({"message": "No such machine exists in the database!"}), 404
+        return jsonify({"message": constants.MSG_404}), 404
     response = machine.to_dict()
     return jsonify(response), 200
 
@@ -49,7 +50,7 @@ def update_machine(machine_id: int) -> tuple[Response, int]:
     """Update the vending machine name or address."""
     machine = Machine.query.get(machine_id)
     if machine is None:
-        return jsonify("No such machine exists in the database!"), 404
+        return jsonify({"message": constants.MSG_404}), 404
 
     new_name = request.form["name"] or machine.name
     new_address = request.form["address"] or machine.address
@@ -60,8 +61,8 @@ def update_machine(machine_id: int) -> tuple[Response, int]:
         db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()
-        return jsonify({"message": "Something went wrong!"}), 500
-    return jsonify({"message": "Updated the vending machine information!"}), 200
+        return jsonify({"message": constants.MSG_500}), 500
+    return jsonify({"message": constants.MSG_200}), 200
 
 
 @machine_blueprint.route("/delete/<machine_id>", methods=["DELETE"])
@@ -70,11 +71,11 @@ def delete_machine(machine_id: int) -> tuple[Response, int]:
     machine = Machine.query.get(machine_id)
 
     if machine is None:
-        return jsonify({"message": "No such machine exists in the database!"}), 404
+        return jsonify({"message": constants.MSG_404}), 404
     try:
         db.session.delete(machine)
         db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()
-        return jsonify({"message": "Something went wrong!"}), 500
-    return jsonify({"message": "Delete machine successfully!"}), 200
+        return jsonify({"message": constants.MSG_500}), 500
+    return jsonify({"message": constants.MSG_200}), 200
