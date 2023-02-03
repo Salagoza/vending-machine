@@ -1,3 +1,8 @@
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Salagoza_vending-machine&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Salagoza_vending-machine)
+
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Salagoza_vending-machine&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=Salagoza_vending-machine)
+
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Salagoza_vending-machine&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Salagoza_vending-machine)
 
 # Vending Machine
 
