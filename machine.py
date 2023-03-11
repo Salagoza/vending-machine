@@ -4,6 +4,7 @@ from sqlalchemy.exc import SQLAlchemyError
 import constants
 from db import db
 from models import Machine
+from timeline import create_timeline, delete_machine_timeline_by_machine_id
 
 machine_blueprint = Blueprint("machine", __name__)
 
@@ -17,6 +18,7 @@ def create_machine() -> tuple[Response, int]:
     try:
         db.session.add(new_machine)
         db.session.commit()
+        create_timeline(new_machine.id)
     except SQLAlchemyError:
         db.session.rollback()
 
@@ -74,6 +76,7 @@ def delete_machine(machine_id: int) -> tuple[Response, int]:
         return jsonify({"message": constants.MSG_404}), 404
     try:
         db.session.delete(machine)
+        delete_machine_timeline_by_machine_id(machine_id)
         db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()

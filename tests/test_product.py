@@ -116,6 +116,11 @@ def test_get_product_by_id_404(client: FlaskClient, app: Flask):
 
 def test_update_product_200(client: FlaskClient, app: Flask):
     client.post(
+        constants.create_machine_endpoint,
+        data={"name": "Machine1", "address": "IC Bld. Floor.2"},
+    )
+
+    client.post(
         constants.create_product_endpoint,
         data={
             "name": "Lipton",
@@ -175,6 +180,11 @@ def test_update_product_404(client: FlaskClient, app: Flask):
 
 def test_get_delete_product_200(client: FlaskClient, app: Flask):
     client.post(
+        constants.create_machine_endpoint,
+        data={"name": "Machine1", "address": "IC Bld. Floor.2"},
+    )
+
+    client.post(
         constants.create_product_endpoint,
         data={
             "name": "Lipton",
@@ -195,6 +205,11 @@ def test_get_delete_product_200(client: FlaskClient, app: Flask):
 
 
 def test_get_delete_product_partial_200(client: FlaskClient, app: Flask):
+    client.post(
+        constants.create_machine_endpoint,
+        data={"name": "Machine1", "address": "IC Bld. Floor.2"},
+    )
+
     client.post(
         constants.create_product_endpoint,
         data={
