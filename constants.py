@@ -10,6 +10,11 @@ get_machine_endpoint = "/api/machine/get"
 delete_machine_endpoint = "/api/machine/delete"
 update_machine_endpoint = "/api/machine/update"
 
+# Timeline endpoints
+get_timeline_endpoint = "/api/timeline/machine_timeline"
+get_product_timeline_endpoint = "/api/timeline/product_timeline"
+
+
 # Response message
 MSG_500 = "Something went wrong!"
 MSG_200 = "Success!"

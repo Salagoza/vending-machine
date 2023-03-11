@@ -2,7 +2,7 @@ from flask import Flask
 from flask.testing import FlaskClient
 
 import constants
-from models import Machine
+from models import Machine, Timeline
 
 
 def test_create_machine_200(client: FlaskClient, app: Flask):
@@ -93,10 +93,21 @@ def test_delete_machine_200(client: FlaskClient, app: Flask):
         constants.create_machine_endpoint,
         data={"name": "Machine1", "address": "Badminton Court"},
     )
+    client.post(
+        constants.create_product_endpoint,
+        data={
+            "name": "Lipton",
+            "price": 20,
+            "type": "beverage",
+            "machine_id": 1,
+            "quantity": 10,
+        },
+    )
     client.delete(constants.delete_machine_endpoint + "/1")
 
     with app.app_context():
         assert Machine.query.count() == 0
+        assert Timeline.query.count() == 0
 
 
 def test_delete_machine_404(client: FlaskClient, app: Flask):

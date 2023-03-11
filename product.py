@@ -1,9 +1,12 @@
+from datetime import datetime
+
 from flask import Blueprint, Response, jsonify, request
 from sqlalchemy.exc import SQLAlchemyError
 
 import constants
 from db import db
 from models import Product
+from timeline import create_timeline
 
 product_blueprint = Blueprint("product", __name__)
 
@@ -16,18 +19,21 @@ def create_product() -> tuple[Response, int]:
     price = int(request.form["price"])
     machine_id = int(request.form["machine_id"])
     quantity = int(request.form["quantity"])
+    now = datetime.now()
+    current_time = now.strftime("%H:%M:%S")
 
     product = Product.query.filter(
         Product.name == name, Product.machine_id == machine_id
     ).first()
     if product is None:
-        new_product = Product(name, category, price, machine_id, quantity)
+        new_product = Product(name, category, price, machine_id, quantity, current_time)
         db.session.add(new_product)
     else:
         product.quantity += quantity
 
     try:
         db.session.commit()
+        create_timeline(machine_id)
     except SQLAlchemyError:
         db.session.rollback()
         return jsonify({"message": constants.MSG_500}), 500
@@ -37,7 +43,7 @@ def create_product() -> tuple[Response, int]:
 @product_blueprint.route("/get", methods=["GET"])
 def get_all_products() -> tuple[Response, int]:
     """Get all products."""
-    response = list(map(lambda l: l.to_dict(), Product.query.all()))
+    response = list(map(lambda lam: lam.to_dict(), Product.query.all()))
     return jsonify(response), 200
 
 
@@ -69,9 +75,13 @@ def update_product(product_id: int) -> tuple[Response, int]:
     product.category = new_type
     product.quantity = new_quantity
     product.price = new_price
+    now = datetime.now()
+    current_time = now.strftime("%H:%M:%S")
+    product.last_update = current_time
 
     try:
         db.session.commit()
+        create_timeline(product.machine_id)
     except SQLAlchemyError:
         db.session.rollback()
         return jsonify({"message": constants.MSG_500}), 500
@@ -82,7 +92,7 @@ def update_product(product_id: int) -> tuple[Response, int]:
 def delete_product() -> tuple[Response, int]:
     """Delete product."""
     name = request.form["name"]
-    machine_id = request.form["machine_id"]
+    machine_id = int(request.form["machine_id"])
     quantity = int(request.form["quantity"])
     product = Product.query.filter(
         Product.name == name, Product.machine_id == machine_id
@@ -97,6 +107,7 @@ def delete_product() -> tuple[Response, int]:
 
     try:
         db.session.commit()
+        create_timeline(machine_id)
     except SQLAlchemyError:
         db.session.rollback()
         return jsonify({"message": constants.MSG_500}), 500
