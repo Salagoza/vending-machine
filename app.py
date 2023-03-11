@@ -4,6 +4,7 @@ from db import db
 from machine import machine_blueprint
 from product import product_blueprint
 from timeline import timeline_blueprint
+
 DB_NAME = "database.db"
 
 

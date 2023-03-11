@@ -1,9 +1,11 @@
-from flask import Blueprint, request, Response, jsonify, json
-from models import Timeline, ProductLog
-from db import db
-from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime
 from typing import List
+
+from flask import Blueprint, Response, jsonify, request
+from sqlalchemy.exc import SQLAlchemyError
+
+from db import db
+from models import ProductLog, Timeline
 
 timeline_blueprint = Blueprint("timeline", __name__)
 
@@ -11,6 +13,7 @@ timeline_blueprint = Blueprint("timeline", __name__)
 def create_timeline(machine_id: int) -> None:
     """Create vending machine timeline."""
     from machine import get_machine_by_id
+
     print(machine_id)
     machine = get_machine_by_id(machine_id)[0].json
     now = datetime.now()
@@ -27,8 +30,15 @@ def create_timeline(machine_id: int) -> None:
 def create_product_log(timeline_id: int, product: List[dict]) -> None:
     """Create product log for each timeline."""
     for p in product:
-        log = ProductLog(p["name"], timeline_id, p["machine_id"], p["quantity"],
-                         p["price"], p["type"], p["last_update"])
+        log = ProductLog(
+            p["name"],
+            timeline_id,
+            p["machine_id"],
+            p["quantity"],
+            p["price"],
+            p["type"],
+            p["last_update"],
+        )
         db.session.add(log)
     db.session.commit()
 
@@ -45,10 +55,10 @@ def get_machine_timeline_by_machine_id(machine_id: int) -> tuple[Response, int]:
 
 @timeline_blueprint.route("/product_timeline", methods=["GET"])
 def get_product_timeline_by_product_name() -> tuple[Response, int]:
-    """Get the timeline for each product. """
+    """Get the timeline for each product."""
     name = request.form["name"]
     products = ProductLog.query.filter(ProductLog.name == name)
-    response = list(map(lambda l: l.to_dict(), products))
+    response = list(map(lambda lam: lam.to_dict(), products))
     return jsonify(response), 200
 
 

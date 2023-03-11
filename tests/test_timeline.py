@@ -2,7 +2,7 @@ from flask import Flask
 from flask.testing import FlaskClient
 
 import constants
-from models import Timeline, ProductLog
+from models import ProductLog, Timeline
 
 
 def test_create_product(client: FlaskClient, app: Flask):
@@ -39,7 +39,7 @@ def test_get_timeline_by_machine_id(client: FlaskClient, app: Flask):
             "quantity": 1,
         },
     )
-    response = client.get(constants.get_timeline_endpoint+"/1")
+    response = client.get(constants.get_timeline_endpoint + "/1")
     with app.app_context():
         assert response.status_code == 200
         assert Timeline.query.count() == 2

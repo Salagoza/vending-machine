@@ -26,7 +26,7 @@ def create_product() -> tuple[Response, int]:
         Product.name == name, Product.machine_id == machine_id
     ).first()
     if product is None:
-        new_product = Product(name, category, price, machine_id, quantity,current_time)
+        new_product = Product(name, category, price, machine_id, quantity, current_time)
         db.session.add(new_product)
     else:
         product.quantity += quantity
@@ -43,7 +43,7 @@ def create_product() -> tuple[Response, int]:
 @product_blueprint.route("/get", methods=["GET"])
 def get_all_products() -> tuple[Response, int]:
     """Get all products."""
-    response = list(map(lambda l: l.to_dict(), Product.query.all()))
+    response = list(map(lambda lam: lam.to_dict(), Product.query.all()))
     return jsonify(response), 200
 
 

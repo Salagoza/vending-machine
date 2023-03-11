@@ -30,7 +30,7 @@ class Machine(db.Model):
                 "price": product.price,
                 "machine_id": self.id,
                 "quantity": product.quantity,
-                "last_update": product.last_update
+                "last_update": product.last_update,
             }
             machine_dict["stock"].append(product_dict)
         return machine_dict
@@ -47,7 +47,15 @@ class Product(db.Model):
     quantity = db.Column(db.Integer)
     last_update = db.Column(db.String(150), nullable=False)
 
-    def __init__(self, name: str, category: str, price: int, machine_id: int, quantity: int, last_update: str):
+    def __init__(
+        self,
+        name: str,
+        category: str,
+        price: int,
+        machine_id: int,
+        quantity: int,
+        last_update: str,
+    ):
         """Construct the product."""
         self.name = name
         self.category = category
@@ -66,7 +74,8 @@ class Product(db.Model):
 
 
 class Timeline(db.Model):
-    """ Model for Timeline"""
+    """Model for Timeline."""
+
     id = db.Column(db.Integer, primary_key=True)
     machine_id = db.Column(db.Integer, nullable=False)
     stock_log = db.relationship("ProductLog", backref="timeline", cascade="all,delete")
@@ -83,7 +92,7 @@ class Timeline(db.Model):
             "id": self.id,
             "machine_id": self.machine_id,
             "time": self.time,
-            "stock": []
+            "stock": [],
         }
         for product in self.stock_log:
             product_dict = {
@@ -92,14 +101,15 @@ class Timeline(db.Model):
                 "type": product.category,
                 "price": product.price,
                 "quantity": product.quantity,
-                "last_update": product.last_update
+                "last_update": product.last_update,
             }
             timeline_dict["stock"].append(product_dict)
         return timeline_dict
 
 
 class ProductLog(db.Model):
-    """Model for ProductLog"""
+    """Model for ProductLog."""
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     timeline_id = db.Column(db.Integer, db.ForeignKey(Timeline.id))
@@ -109,8 +119,16 @@ class ProductLog(db.Model):
     category = db.Column(db.String(150), nullable=False)
     last_update = db.Column(db.String(150), nullable=False)
 
-    def __init__(self, name: str, timeline_id: int, machine_id: int, quantity: str, price: int, category: str,
-                 last_update: str):
+    def __init__(
+        self,
+        name: str,
+        timeline_id: int,
+        machine_id: int,
+        quantity: str,
+        price: int,
+        category: str,
+        last_update: str,
+    ):
         """Construct the product timeline."""
         self.name = name
         self.timeline_id = timeline_id
