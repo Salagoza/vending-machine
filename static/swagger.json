@@ -1,0 +1,450 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Vending Machine API",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "tags": [
+    {
+      "name": "Machine API"
+    },
+    {
+      "name": "Product API"
+    },
+    {
+      "name": "Timeline API"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "VendingMachine": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          }
+        }
+      },
+      "Product": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "price": {
+            "type": "integer"
+          },
+          "machine_id": {
+            "type": "integer"
+          },
+          "quantity": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/machine/create": {
+      "post": {
+        "summary": "Create vending machine",
+        "tags": [
+          "Machine API"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/VendingMachine"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/VendingMachine"
+            }
+          },
+          "404": {
+            "description": "NOT FOUND",
+            "schema": {
+              "$ref": "#/components/schemas/VendingMachine"
+            }
+          }
+        }
+      }
+    },
+    "/api/machine/get": {
+      "get": {
+        "summary": "Get all vending machines",
+        "tags": [
+          "Machine API"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/VendingMachine"
+            }
+          },
+          "404": {
+            "description": "NOT FOUND",
+            "schema": {
+              "$ref": "#/components/schemas/VendingMachine"
+            }
+          }
+        }
+      }
+    },
+    "/api/machine/get/{machine_id}": {
+      "get": {
+        "summary": "Get vending machine by id",
+        "tags": [
+          "Machine API"
+        ],
+        "parameters": [
+          {
+            "name": "machine_id",
+            "in": "path",
+            "description": "ID of the Machine to retrieve",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/VendingMachine"
+            }
+          },
+          "404": {
+            "description": "NOT FOUND",
+            "schema": {
+              "$ref": "#/components/schemas/VendingMachine"
+            }
+          }
+        }
+      }
+    },
+    "/api/machine/update/{machine_id}": {
+      "put": {
+        "summary": "Update the vending machine by id",
+        "tags": [
+          "Machine API"
+        ],
+        "parameters": [
+          {
+            "name": "machine_id",
+            "in": "path",
+            "description": "ID of the Machine to update",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/VendingMachine"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/VendingMachine"
+            }
+          },
+          "404": {
+            "description": "NOT FOUND",
+            "schema": {
+              "$ref": "#/components/schemas/VendingMachine"
+            }
+          }
+        }
+      }
+    },
+    "/api/machine/delete/{machine_id}": {
+      "delete": {
+        "summary": "Delete vending machine",
+        "tags": [
+          "Machine API"
+        ],
+        "parameters": [
+          {
+            "name": "machine_id",
+            "in": "path",
+            "description": "ID of the product to retrieve",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/VendingMachine"
+            }
+          },
+          "404": {
+            "description": "NOT FOUND",
+            "schema": {
+              "$ref": "#/components/schemas/VendingMachine"
+            }
+          }
+        }
+      }
+    },
+    "/api/product/create": {
+      "post": {
+        "summary": "Create product",
+        "tags": [
+          "Product API"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Product"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/Product"
+            }
+          },
+          "404": {
+            "description": "NOT FOUND",
+            "schema": {
+              "$ref": "#/components/schemas/Product"
+            }
+          }
+        }
+      }
+    },
+    "/api/product/get": {
+      "get": {
+        "summary": "Get all products",
+        "tags": [
+          "Product API"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/Product"
+            }
+          },
+          "404": {
+            "description": "NOT FOUND",
+            "schema": {
+              "$ref": "#/components/schemas/Product"
+            }
+          }
+        }
+      }
+    },
+    "/api/product/get/{product_id}": {
+      "get": {
+        "summary": "Get product by id",
+        "tags": [
+          "Product API"
+        ],
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "description": "ID of the product to retrieve",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/VendingMachine"
+            }
+          },
+          "404": {
+            "description": "NOT FOUND",
+            "schema": {
+              "$ref": "#/components/schemas/VendingMachine"
+            }
+          }
+        }
+      }
+    },
+    "/api/product/update/{product_id}": {
+      "put": {
+        "summary": "Update product by id",
+        "tags": [
+          "Product API"
+        ],
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "description": "ID of the product to update",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Product"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/Product"
+            }
+          },
+          "404": {
+            "description": "NOT FOUND",
+            "schema": {
+              "$ref": "#/components/schemas/Product"
+            }
+          }
+        }
+      }
+    },
+    "/api/product/delete": {
+      "delete": {
+        "summary": "Delete product",
+        "tags": [
+          "Product API"
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Product"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/Product"
+            }
+          },
+          "404": {
+            "description": "NOT FOUND",
+            "schema": {
+              "$ref": "#/components/schemas/Product"
+            }
+          }
+        }
+      }
+    },
+    "/api/timeline/machine_timeline/{machine_id}": {
+      "get": {
+        "summary": "Get timeline of a vending machine",
+        "tags": [
+          "Timeline API"
+        ],
+        "parameters": [
+          {
+            "name": "machine_id",
+            "in": "path",
+            "description": "ID of the machine to retrieve the timeline",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/VendingMachine"
+            }
+          },
+          "404": {
+            "description": "NOT FOUND",
+            "schema": {
+              "$ref": "#/components/schemas/VendingMachine"
+            }
+          }
+        }
+      }
+    },
+    "/api/timeline/product_timeline/{product_name}": {
+      "get": {
+        "summary": "Get timeline of a product",
+        "tags": [
+          "Timeline API"
+        ],
+        "parameters": [
+          {
+            "name": "product_name",
+            "in": "path",
+            "description": "Name of the product to retrieve the timeline",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/Product"
+            }
+          },
+          "404": {
+            "description": "NOT FOUND",
+            "schema": {
+              "$ref": "#/components/schemas/Product"
+            }
+          }
+        }
+      }
+    }
+  }
+}

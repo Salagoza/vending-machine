@@ -20,7 +20,7 @@ def create_product() -> tuple[Response, int]:
     machine_id = int(request.form["machine_id"])
     quantity = int(request.form["quantity"])
     now = datetime.now()
-    current_time = now.strftime("%H:%M:%S")
+    current_time = now.strftime("%Y-%m-%d %H:%M:%S")
 
     product = Product.query.filter(
         Product.name == name, Product.machine_id == machine_id
@@ -76,7 +76,7 @@ def update_product(product_id: int) -> tuple[Response, int]:
     product.quantity = new_quantity
     product.price = new_price
     now = datetime.now()
-    current_time = now.strftime("%H:%M:%S")
+    current_time = now.strftime("%Y-%m-%d %H:%M:%S")
     product.last_update = current_time
 
     try:
