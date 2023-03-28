@@ -111,7 +111,7 @@ class ProductLog(db.Model):
     """Model for ProductLog."""
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False)
+    name = db.Column(db.String(150), nullable=False)
     timeline_id = db.Column(db.Integer, db.ForeignKey(Timeline.id))
     machine_id = db.Column(db.Integer, nullable=False)
     quantity = db.Column(db.Integer, nullable=False)

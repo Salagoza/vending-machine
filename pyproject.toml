@@ -12,6 +12,7 @@ pre-commit = "^3.0.3"
 pytest = "^7.2.1"
 pytest-cov = "^4.0.0"
 flask-sqlalchemy = "^3.0.3"
+flask-swagger-ui = "^4.11.1"
 
 
 [build-system]

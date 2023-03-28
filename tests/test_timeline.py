@@ -8,7 +8,7 @@ from models import ProductLog, Timeline
 def test_create_product(client: FlaskClient, app: Flask):
     client.post(
         constants.create_machine_endpoint,
-        data={"name": "Machine1", "address": "Apple Store"},
+        data={"name": "Machine1", "address": "7-Eleven"},
     )
     client.post(
         constants.create_product_endpoint,
@@ -27,7 +27,7 @@ def test_create_product(client: FlaskClient, app: Flask):
 def test_get_timeline_by_machine_id(client: FlaskClient, app: Flask):
     client.post(
         constants.create_machine_endpoint,
-        data={"name": "Machine1", "address": "Apple Store"},
+        data={"name": "Machine1", "address": "Co-working space"},
     )
     client.post(
         constants.create_product_endpoint,

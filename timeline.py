@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List
 
-from flask import Blueprint, Response, jsonify, request
+from flask import Blueprint, Response, jsonify
 from sqlalchemy.exc import SQLAlchemyError
 
 from db import db
@@ -17,7 +17,7 @@ def create_timeline(machine_id: int) -> None:
     print(machine_id)
     machine = get_machine_by_id(machine_id)[0].json
     now = datetime.now()
-    current_time = now.strftime("%H:%M:%S")
+    current_time = now.strftime("%Y-%m-%d %H:%M:%S")
     timeline = Timeline(current_time, machine["id"])
     try:
         db.session.add(timeline)
@@ -53,11 +53,10 @@ def get_machine_timeline_by_machine_id(machine_id: int) -> tuple[Response, int]:
     return jsonify(response), 200
 
 
-@timeline_blueprint.route("/product_timeline", methods=["GET"])
-def get_product_timeline_by_product_name() -> tuple[Response, int]:
+@timeline_blueprint.route("/product_timeline/<product_name>", methods=["GET"])
+def get_product_timeline_by_product_name(product_name: str) -> tuple[Response, int]:
     """Get the timeline for each product."""
-    name = request.form["name"]
-    products = ProductLog.query.filter(ProductLog.name == name)
+    products = ProductLog.query.filter(ProductLog.name == product_name)
     response = list(map(lambda lam: lam.to_dict(), products))
     return jsonify(response), 200
 
